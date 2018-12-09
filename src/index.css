@@ -1,0 +1,9 @@
+
+html, body, :global(#root) {
+    font-family: "微软雅黑" !important;
+  height: 100%;
+}
+
+.ant-menu-item-selected {
+    color: #6b6b6b;
+}
