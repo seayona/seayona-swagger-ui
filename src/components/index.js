@@ -1,1 +1,2 @@
-export { default as Line } from './line';
+
+export { default as Line } from '@components/line';

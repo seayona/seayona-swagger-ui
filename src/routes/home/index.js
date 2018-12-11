@@ -1,26 +1,72 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Menu, Breadcrumb, Icon, Row, Col, Tag, Table, BackTop, Input } from 'antd';
-import { Line } from '../../components'
+import { Line } from '@components'
 
-import './index.less'
+import '@routes/home/index.less'
+
 import { connect } from 'dva';
 const { SubMenu } = Menu;
-const {
-    Header, Content, Footer, Sider,
-} = Layout;
-
+const { Header, Content, Footer, Sider, } = Layout;
 
 
 class HomePage extends Component {
-
 
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch({ type: 'document/loadData' });
     }
 
+    renderExtensionLinks = () => {
+        const { links } = this.props;
+        return links.map(link => {
+            return (
+                <Menu.Item key={link.name}>
+                    <Icon type={link.icon} />
+                    <span>{link.name}</span>
+                </Menu.Item>
+            )
+        })
+    }
+
+    buildMenus = () => {
+        const { document } = this.props;
+
+    }
+
+    renderDocumentTitle = () => {
+        const { info } = this.props;
+        return (
+            <Row type="flex" justify="center" align="middle" style={{ height: 148, textAlign: 'center', color: "rgba(0, 0, 0, 0.65)" }}>
+                {info && info.title || 'NOYA DOCUMENTATION'}
+            </Row>
+        )
+    }
+
+    renderMenus = () => {
+        const { tags, menus } = this.props;
+
+        const buildChildren = (tag) => {
+            const ms = menus.filter(x => x.tag == tag) || [];
+            return ms.map(menu => {
+                return (
+                    <Menu.Item key={menu.id}>{menu.name}</Menu.Item>
+                )
+            });
+        }
+
+        return tags.map(tag => {
+            const children = buildChildren(tag.name);
+            return (
+                <SubMenu key={tag.name} title={<span><Icon style={{ fontSize: 12 }} type="caret-right" />{tag.description || tag.name}</span>}>
+                    {children}
+                </SubMenu>
+            )
+        })
+    }
+
     render() {
+
         return (
             <Layout>
                 <BackTop visibilityHeight={300} />
@@ -33,47 +79,10 @@ class HomePage extends Component {
                                 defaultOpenKeys={['sub1']}
                                 style={{ height: '100%' }}
                             >
-
-                                <Row type="flex" justify="center" align="middle" style={{ height: 148, textAlign: 'center', color: "rgba(0, 0, 0, 0.65)" }}>
-                                    NOYA DOCUMENTION
-                                </Row>
-
-
-                                <Menu.Item key="introduction">
-                                    <Icon type="read" />
-                                    <span>文档说明</span>
-                                </Menu.Item>
-
-                                <Menu.Item key="authorization">
-                                    <Icon type="link" />
-                                    <span>授权访问</span>
-                                </Menu.Item>
-
-                                <Menu.Item key="9">
-                                    <Icon type="schedule" />
-                                    <span>附录：错误码</span>
-                                </Menu.Item>
-
-
+                                {this.renderDocumentTitle()}
+                                {this.renderExtensionLinks()}
                                 <Row style={{ height: 20 }}></Row>
-                                <SubMenu key="sub1" title={<span><Icon style={{ fontSize: 12 }} type="caret-right" />用户授权</span>}>
-                                    <Menu.Item key="1">option1</Menu.Item>
-                                    <Menu.Item key="2">option2</Menu.Item>
-                                    <Menu.Item key="3">option3</Menu.Item>
-                                    <Menu.Item key="4">option4</Menu.Item>
-                                </SubMenu>
-                                <SubMenu key="sub2" title={<span><Icon style={{ fontSize: 12 }} type="caret-right" />任务</span>}>
-                                    <Menu.Item key="5">option5</Menu.Item>
-                                    <Menu.Item key="6">option6</Menu.Item>
-                                    <Menu.Item key="7">option7</Menu.Item>
-                                    <Menu.Item key="8">option8</Menu.Item>
-                                </SubMenu>
-                                <SubMenu key="sub3" title={<span><Icon style={{ fontSize: 12 }} type="caret-right" />Flowplus</span>}>
-                                    <Menu.Item key="9">option9</Menu.Item>
-                                    <Menu.Item key="10">option10</Menu.Item>
-                                    <Menu.Item key="11">option11</Menu.Item>
-                                    <Menu.Item key="12">option12</Menu.Item>
-                                </SubMenu>
+                                {this.renderMenus()}
                             </Menu>
                         </Sider>
                         <Content style={{ padding: '0 40px', minHeight: 1000 }}>
@@ -175,4 +184,13 @@ class HomePage extends Component {
 }
 
 
-export default connect(({ document }) => { document })(HomePage);
+export default connect(({ document, loading }) => {
+    return {
+        data: document.data,
+        info: document.info,
+        links: document.links || [],
+        tags: document.tags,
+        menus: document.menus,
+        loading: loading.effects['document/loadData']
+    }
+})(HomePage);

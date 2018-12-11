@@ -1,4 +1,4 @@
-import { load } from '../services/document';
+import { load } from '@services/document';
 
 
 export default {
@@ -7,6 +7,10 @@ export default {
 
     state: {
         data: null,
+        info: null,
+        links: [],
+        tags: [],
+        menus: []
     },
 
     subscriptions: {
@@ -16,8 +20,41 @@ export default {
 
     effects: {
         *loadData({ payload }, { call, put }) {  // eslint-disable-line
-            const data = yield call(load, { url: 'http://localhost:8080/v2/api-docs' });
-            yield put({ type: 'save', payload: { data } });
+
+            const document = yield call(load, { url: 'http://localhost:8080/v2/api-docs' });
+            let data, paths, info, tags = [], menus = [], links = [];
+
+            if (document && document.data) {
+                data = document.data;
+                info = document.data.info;
+                
+                if(document.data.info){
+                    links = document.data.info['x-links'] || [];
+                }
+                
+                paths = data.paths || [];
+                tags = data.tags || [];
+            }
+            for (let route in paths) {
+                for (let method in paths[route]) {
+                    const detail = paths[route][method];
+                    detail.tags && detail.tags.map(tag => {
+                        if (tags.find(t => t.name == tag) == null) {
+                            tags.push({ name: tag });
+                        }
+                        menus.push({
+                            id: route.substring(1).replace(/\//g, '-').replace(/\{/g, '').replace(/\}/g, '') + '-' + method,
+                            tag: tag,
+                            name: detail.summary || route,
+                            description: detail.description,
+                            path: route,
+                            method: method,
+                            detail: paths[route][method]
+                        });
+                    })
+                }
+            }
+            yield put({ type: 'save', payload: { data, info, tags, menus, links } });
         },
     },
 
