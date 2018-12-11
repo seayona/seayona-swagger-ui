@@ -65,20 +65,67 @@ class HomePage extends Component {
         })
     }
 
+    renderRequestParams = () => {
+        const requestParamsColumn = [{
+            title: '请求参数',
+            dataIndex: 'name',
+            width: 150,
+        }, {
+            title: '数据类型',
+            dataIndex: 'data_type',
+        }, {
+            title: '约束',
+            dataIndex: 'required',
+        }, {
+            title: '描述',
+            dataIndex: 'description',
+        }];
+
+        return (
+            <Table bordered pagination={false} columns={requestParamsColumn} dataSource={[
+                    { name: "anonymous", data_type: "Boolean", required: "Max length: 500", description: "投票选项" }
+                ]} />
+        )
+
+
+    }
+
     render() {
 
+
+
+        const responseParamsColumn = [{
+            title: '返回数据属性',
+            dataIndex: 'name',
+            width: 150,
+        }, {
+            title: '类型',
+            dataIndex: 'data_type',
+        }, {
+            title: '描述',
+            dataIndex: 'description',
+        }];
+
+
+        const returnCodeParamsColumn = [
+            {
+                title: '状态码',
+                width: 150,
+                dataIndex: 'status',
+            }, {
+                title: '代码',
+                dataIndex: 'code',
+            }, {
+                title: '说明',
+                dataIndex: 'message',
+            }];
         return (
             <Layout>
                 <BackTop visibilityHeight={300} />
                 <Content className="content" >
                     <Layout style={{ padding: '15px 0', background: '#fff' }}>
                         <Sider width={240} style={{ background: '#fff' }}>
-                            <Menu
-                                mode="inline"
-                                defaultSelectedKeys={['1']}
-                                defaultOpenKeys={['sub1']}
-                                style={{ height: '100%' }}
-                            >
+                            <Menu mode="inline" style={{ height: '100%' }}>
                                 {this.renderDocumentTitle()}
                                 {this.renderExtensionLinks()}
                                 <Row style={{ height: 20 }}></Row>
@@ -98,26 +145,6 @@ class HomePage extends Component {
                                 <Col span={22}>http://139.224.234.155/api/users</Col>
                             </Row>
                             <Line type="dashed" />
-                            <Table
-                                bordered
-                                pagination={false}
-                                columns={[{
-                                    title: '请求参数',
-                                    dataIndex: 'name',
-                                    width: 150,
-                                }, {
-                                    title: '数据类型',
-                                    dataIndex: 'data_type',
-                                }, {
-                                    title: '约束',
-                                    dataIndex: 'required',
-                                }, {
-                                    title: '描述',
-                                    dataIndex: 'description',
-                                }]} dataSource={[
-                                    { name: "anonymous", data_type: "Boolean", required: "Max length: 500", description: "投票选项" }
-                                ]} />
-
                             <Line type="dashed" />
                             <Row style={{ position: "relative" }}>
                                 <span className="pre-code-span">请求示例</span>
@@ -129,17 +156,7 @@ class HomePage extends Component {
                             <Table
                                 bordered
                                 pagination={false}
-                                columns={[{
-                                    title: '返回数据属性',
-                                    dataIndex: 'name',
-                                    width: 150,
-                                }, {
-                                    title: '类型',
-                                    dataIndex: 'data_type',
-                                }, {
-                                    title: '描述',
-                                    dataIndex: 'description',
-                                }]} dataSource={[
+                                columns={responseParamsColumn} dataSource={[
                                     { name: "anonymous", data_type: "Boolean", required: "Max length: 500", description: "投票选项" }
                                 ]} />
 
@@ -150,28 +167,15 @@ class HomePage extends Component {
                                     {'{\n\t"name": "多媒体会议室",\n\t"current": 1,\n\t"page_size": 10,\n\t"sort": "Name",\n\t"descending": false\n}'}
                                 </pre>
                             </Row>
-
                             <Line type="dashed" />
                             <Table
                                 pagination={false}
                                 bordered
-                                columns={[
-                                    {
-                                        title: '状态码',
-                                        width: 150,
-                                        dataIndex: 'status',
-                                    }, {
-                                        title: '代码',
-                                        dataIndex: 'code',
-                                    }, {
-                                        title: '说明',
-                                        dataIndex: 'message',
-                                    },]} dataSource={[
-                                        { status: 400, code: "VOTE_NOT_BEGIN", message: "投票尚未开始" },
-                                        { status: 400, code: "VOTE_END", message: "投票已结束" },
-                                        { status: 404, code: "VOTE_RECORD_ID_NOTE_INVALID", message: "未找到指定投票" }
-                                    ]} />
-
+                                columns={returnCodeParamsColumn} dataSource={[
+                                    { status: 400, code: "VOTE_NOT_BEGIN", message: "投票尚未开始" },
+                                    { status: 400, code: "VOTE_END", message: "投票已结束" },
+                                    { status: 404, code: "VOTE_RECORD_ID_NOTE_INVALID", message: "未找到指定投票" }
+                                ]} />
                         </Content>
                     </Layout>
                 </Content>
