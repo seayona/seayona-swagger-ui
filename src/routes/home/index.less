@@ -1,10 +1,14 @@
 :global{
+    .ant-layout {
+        background: transparent;
+    }
+
     .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
         padding: 7px 10px;
         word-break: break-word;
     }
     .ant-table-thead > tr > th {
-        color: #676a6c;
+        // color: #676a6c;
         background-color: #ffffff;
         border-bottom: 1px solid #e8e8e8;
     }
@@ -13,10 +17,22 @@
     }
     .ant-menu-inline .ant-menu-submenu-title{
         padding-left: 20px !important;
+        
+    }
+    .ant-menu-submenu > .ant-menu {
+        background-color: transparent;
+    }
+    
+    .ant-menu-submenu-active .ant-menu-submenu-title {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-active {
+        background-color: rgba(0, 0, 0, 0.2);
     }
 
     .content{
-        width: 1200px;
+        width: 100%;
         margin: 0px auto;
         min-height: 1000px;
     }
@@ -28,8 +44,8 @@
         line-height: 1.42857143;
         word-break: break-all;
         word-wrap: break-word;
-        color: #333;
-        background-color: #f5f5f5;
+        // color: #333;
+        // background-color: #f5f5f5;
         border: 1px solid #ccc;
         border-radius: 4px;
         min-height: 100px;
@@ -41,18 +57,18 @@
         border-radius: 3px;
         right: 0px;
         font-size: 12px;
-        background-color: white;
+        // background-color: white;
         cursor: pointer;
     }
 
     
-    @media(max-width: 1200px) {
-        body { width: 1024px; margin: 0px 20px; }
-        .ant-layout-content{
-            width: -webkit-fill-available;
-        }
-        .ant-layout-sider { display: none; }
-    }
+    // @media(max-width: 1200px) {
+    //     body { width: 1024px; margin: 0px 20px; }
+    //     .ant-layout-content{
+    //         width: -webkit-fill-available;
+    //     }
+    //     .ant-layout-sider { display: none; }
+    // }
 
     ::-webkit-scrollbar-corner { background-color: transparent; }
 
@@ -66,5 +82,29 @@
 
     ::-webkit-scrollbar:hover { background-color: transparent; }
 
+    .ant-tabs-nav .ant-tabs-tab:hover {
+        color: #000;
+    }
+
+    .ant-tabs-nav .ant-tabs-tab-active {
+        color: #000;
+    }
+
+    .ant-tabs-ink-bar {
+        background-color: #bfbfbf;
+    }
+
+  
+    .ant-menu-vertical .ant-menu-item:after, .ant-menu-vertical-left .ant-menu-item:after, .ant-menu-vertical-right .ant-menu-item:after, .ant-menu-inline .ant-menu-item:after {
+        border-right: none;
+        left: 30px;
+        height: 0;
+        width: 0;
+        right: 0;
+        top: 15px;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 5px solid #607d8b;
+    }
 }
 

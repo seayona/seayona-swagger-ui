@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Menu, Breadcrumb, Icon, Row, Col, Tag, Table, BackTop, Input } from 'antd';
+import { Layout, Menu, Breadcrumb, Icon, Row, Col, Tag, Table, BackTop, Input, Tabs } from 'antd';
 import { Line } from '@components'
 
 import '@routes/home/index.less'
 
 import { connect } from 'dva';
-const { SubMenu } = Menu;
+const { SubMenu, ItemGroup } = Menu;
 const { Header, Content, Footer, Sider, } = Layout;
+
+
+const DocumentTitle = ({ title }) => (
+  <Row type="flex" justify="center" align="middle" style={{
+    height: 148, textAlign: 'center',
+    // color: "rgba(0, 0, 0, 0.65)"
+  }}>
+    {title}
+  </Row>
+)
+
 
 
 class HomePage extends Component {
@@ -139,7 +150,7 @@ class HomePage extends Component {
   renderDocumentTitle = () => {
     const { info } = this.props;
     return (
-      <Row type="flex" justify="center" align="middle" style={{ height: 148, textAlign: 'center', color: "rgba(0, 0, 0, 0.65)" }}>
+      <Row type="flex" justify="center" align="middle" style={{ height: 148, textAlign: 'center' }}>
         {info && info.title && info.title.toUpperCase() || 'NOYA DOCUMENTATION'}
       </Row>
     )
@@ -161,7 +172,7 @@ class HomePage extends Component {
     return tags.map(tag => {
       const children = buildChildren(tag.name);
       return (
-        <SubMenu key={tag.name} title={<span><Icon style={{ fontSize: 12 }} type="caret-right" />{tag.description || tag.name}</span>}>
+        <SubMenu key={tag.name} title={<span>{tag.description || tag.name}</span>}>
           {children}
         </SubMenu>
       )
@@ -209,7 +220,6 @@ class HomePage extends Component {
 
     return (
       <Row>
-        <Line type="dashed" />
         <Table bordered pagination={false} columns={requestParamsColumn} dataSource={parameters} />
       </Row>
     )
@@ -245,7 +255,6 @@ class HomePage extends Component {
     const properties = this.extractReponseProperties(item);
     return (
       <Row>
-        <Line type="dashed" />
         <Table
           bordered
           pagination={false}
@@ -254,12 +263,8 @@ class HomePage extends Component {
     )
   }
   renderRequestExample = () => {
-
-    return null;
-
     return (
       <Row>
-        <Line type="dashed" />
         <Row style={{ position: "relative" }}>
           <span className="pre-code-span">请求示例</span>
           <pre>
@@ -271,14 +276,12 @@ class HomePage extends Component {
   }
 
   renderResponseExample = () => {
-    return null;
     return (
       <Row>
-        <Line type="dashed" />
         <Row style={{ position: "relative" }}>
           <span className="pre-code-span">结果示例</span>
           <pre>
-            {'{\n\t"name": "多媒体会议室",\n\t"current": 1,\n\t"page_size": 10,\n\t"sort": "Name",\n\t"descending": false\n}'}
+
           </pre>
         </Row>
       </Row>
@@ -314,12 +317,15 @@ class HomePage extends Component {
   renderRequestUrl = () => {
     const { item } = this.state;
     return (
-      <Row>
-        <Col span={2}>
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: '0 0 80px' }}>
           <Tag>{item.method.toUpperCase()}</Tag>
-        </Col>
-        <Col span={22}>http://localhost:8080{item.path}</Col>
-      </Row>
+        </div>
+        <div>
+          <span>{item.path}</span>
+          <span style={{ marginLeft: 12, cursor: 'pointer' }}><Icon type="copy" /></span>
+        </div>
+      </div>
     )
   }
   renderContent = () => {
@@ -330,10 +336,31 @@ class HomePage extends Component {
     return (
       <Row>
         {this.renderRequestUrl()}
-        {this.renderRequestParams()}
-        {this.renderRequestExample()}
-        {this.renderResponseParams()}
-        {this.renderResponseExample()}
+        <Line type="dashed" />
+        <Tabs animated={false}>
+          <Tabs.TabPane key="params" tab="Params">
+            {this.renderRequestParams()}
+          </Tabs.TabPane>
+          <Tabs.TabPane key="authorization" tab="Authorization">
+          </Tabs.TabPane>
+          <Tabs.TabPane key="headers" tab="Headers">
+          </Tabs.TabPane>
+          <Tabs.TabPane key="body" tab="Body">
+          </Tabs.TabPane>
+          <Tabs.TabPane key="example" tab="Example">
+            {this.renderRequestExample()}
+          </Tabs.TabPane>
+        </Tabs>
+        <Line type="dashed" />
+        <Tabs animated={false}>
+          <Tabs.TabPane key="response" tab="Response">
+            {this.renderResponseParams()}
+          </Tabs.TabPane>
+          <Tabs.TabPane key="example" tab="Example">
+            {this.renderResponseExample()}
+          </Tabs.TabPane>
+        </Tabs>
+        <Line type="dashed" />
         {this.renderReturnCode()}
       </Row>
     )
@@ -358,28 +385,30 @@ class HomePage extends Component {
   }
 
   render() {
+    const { info } = this.props;
     return (
-      <Layout>
+      <Layout style={{ background: 'transparent' }}>
         <BackTop visibilityHeight={300} />
-        <Content className="content" >
-          <Layout style={{ padding: '15px 0', background: '#fff' }}>
-            <Sider width={240} style={{ background: '#fff' }}>
-              <Menu mode="inline" style={{ height: '100%' }}>
-                {this.renderDocumentTitle()}
+        <Content className="content" style={{ padding: 0 }} >
+          <Layout style={{}}>
+            <Sider width={280} style={{ background: 'rgba(245, 245, 245, 0.65)', backdropFilter: 'blur(10px)' }} >
+              <Menu mode="inline" style={{ height: '100%', borderRight: 'none', background: 'transparent' }} >
+                {/* {this.renderDocumentTitle()} */}
+                <DocumentTitle title={info && info.title && info.title.toUpperCase() || 'SWAGGER DOCUMENTATION'} />
                 {this.renderExtensionLinks()}
                 <Row style={{ height: 20 }}></Row>
                 {this.renderMenus()}
               </Menu>
             </Sider>
-            <Content style={{ padding: '0 40px', minHeight: 1000 }}>
-              {this.renderBreadcrumb()}
-              {this.renderContent()}
+            <Content>
+              <Header style={{ background: 'rgba(245, 245, 245, 0.8)', backdropFilter: 'blur(10px)' }}></Header>
+              <Content style={{ minHeight: 1000, padding: 24, backgroundColor: 'white' }}>
+                {this.renderBreadcrumb()}
+                {this.renderContent()}
+              </Content>
             </Content>
           </Layout>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          NOYA ©2018
-                </Footer>
       </Layout>
     );
   }

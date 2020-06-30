@@ -1,9 +1,11 @@
 
 html, body, :global(#root) {
-    font-family: "微软雅黑" !important;
+  font-family: "微软雅黑" !important;
   height: 100%;
+  background-image: url(./assets/wall.jpg);
 }
 
 .ant-menu-item-selected {
-    color: #6b6b6b;
+    /* color: #6b6b6b; */
 }
+
